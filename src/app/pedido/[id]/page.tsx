@@ -3,8 +3,7 @@
 import { useEffect, useState, use } from "react";
 import Link from "next/link";
 import { formatCents } from "@/lib/format";
-
-type OrderStatus = "RECEIVED" | "CONFIRMED" | "PREPARING" | "READY" | "DELIVERED" | "COMPLETED" | "CANCELLED";
+import { ORDER_STATUS_LABEL, type OrderStatus } from "@/lib/order-status";
 
 const STEPS: { status: OrderStatus; label: string }[] = [
   { status: "RECEIVED", label: "Recebido" },
@@ -20,14 +19,34 @@ type Order = {
   status: OrderStatus;
   type: string;
   table: { number: number; label: string | null } | null;
+  subtotalCents: number;
+  serviceFeeCents: number;
+  deliveryFeeCents: number;
   totalCents: number;
+  createdAt: string;
   items: { productName: string; quantity: number; lineTotalCents: number; options: { name: string }[] }[];
+};
+
+function formatElapsed(createdAt: string): string {
+  const minutes = Math.max(0, Math.round((Date.now() - new Date(createdAt).getTime()) / 60000));
+  if (minutes < 1) return "agora mesmo";
+  if (minutes === 1) return "há 1 minuto";
+  if (minutes < 60) return `há ${minutes} minutos`;
+  const hours = Math.floor(minutes / 60);
+  return `há ${hours}h${minutes % 60 ? ` ${minutes % 60}min` : ""}`;
+}
+
+const TYPE_LABEL: Record<string, string> = {
+  DINE_IN: "Na mesa",
+  TAKEAWAY: "Retirada",
+  DELIVERY: "Entrega",
 };
 
 export default function PedidoPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [order, setOrder] = useState<Order | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,15 +93,26 @@ export default function PedidoPage({ params }: { params: Promise<{ id: string }>
 
   const currentIndex = STEPS.findIndex((s) => s.status === order.status);
   const isCancelled = order.status === "CANCELLED";
+  const isFinished = order.status === "DELIVERED" || order.status === "COMPLETED";
+
+  async function copyLink() {
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // clipboard indisponível (ex: http sem permissão) — sem drama, o link já está na barra de endereço
+    }
+  }
 
   return (
     <div>
       <header className="topbar">
         <div className="brand">
           Pedido #{order.number}
-          <small>Bar do Aldo</small>
+          <small>Bar do Aldo · {TYPE_LABEL[order.type] ?? order.type}{order.table && ` · Mesa ${order.table.number}`}</small>
         </div>
-        <span className={`status-pill status-${order.status}`}>{order.status}</span>
+        <span className={`status-pill status-${order.status}`}>{ORDER_STATUS_LABEL[order.status]}</span>
       </header>
 
       <div className="container" style={{ paddingTop: 24 }}>
@@ -96,9 +126,20 @@ export default function PedidoPage({ params }: { params: Promise<{ id: string }>
               ))}
             </div>
             <p style={{ color: "var(--ink-soft)", fontSize: "0.86rem" }}>
-              {STEPS[currentIndex]?.label ?? order.status}
-              {order.table && ` · Mesa ${order.table.number}`}
+              {STEPS[currentIndex]?.label ?? ORDER_STATUS_LABEL[order.status]}
+              {" · feito "}{formatElapsed(order.createdAt)}
             </p>
+
+            {isFinished && (
+              <div className="card" style={{ marginTop: 16, textAlign: "center", background: "var(--ember-10, rgba(216,114,44,0.08))" }}>
+                <p style={{ margin: 0, fontSize: "0.95rem" }}>
+                  {order.status === "DELIVERED" ? "Aproveite! 🍽️" : "Pedido finalizado."}
+                </p>
+                <Link href="/cardapio" className="btn" style={{ display: "inline-block", marginTop: 10 }}>
+                  Fazer novo pedido
+                </Link>
+              </div>
+            )}
           </>
         )}
 
@@ -116,13 +157,33 @@ export default function PedidoPage({ params }: { params: Promise<{ id: string }>
               <span>{formatCents(item.lineTotalCents)}</span>
             </div>
           ))}
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", color: "var(--ink-soft)", marginTop: 10 }}>
+            <span>Subtotal</span>
+            <span>{formatCents(order.subtotalCents)}</span>
+          </div>
+          {order.serviceFeeCents > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", color: "var(--ink-soft)" }}>
+              <span>Taxa de serviço</span>
+              <span>{formatCents(order.serviceFeeCents)}</span>
+            </div>
+          )}
+          {order.deliveryFeeCents > 0 && (
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", color: "var(--ink-soft)" }}>
+              <span>Taxa de entrega</span>
+              <span>{formatCents(order.deliveryFeeCents)}</span>
+            </div>
+          )}
           <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, marginTop: 10, fontSize: "1.05rem" }}>
             <span>Total</span>
             <span>{formatCents(order.totalCents)}</span>
           </div>
         </div>
 
-        <p style={{ fontSize: "0.76rem", color: "var(--ink-soft)", marginTop: 16 }}>
+        <button onClick={copyLink} className="btn-ghost" style={{ marginTop: 16, width: "100%" }}>
+          {copied ? "Link copiado ✓" : "Copiar link deste pedido"}
+        </button>
+
+        <p style={{ fontSize: "0.76rem", color: "var(--ink-soft)", marginTop: 12, textAlign: "center" }}>
           Esta página atualiza sozinha. Você pode fechá-la e voltar depois — o link continua válido.
         </p>
       </div>

@@ -2,8 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { formatCents } from "@/lib/format";
-
-type OrderStatus = "RECEIVED" | "CONFIRMED" | "PREPARING" | "READY" | "DELIVERED" | "COMPLETED" | "CANCELLED";
+import { ORDER_STATUS_LABEL, type OrderStatus } from "@/lib/order-status";
 
 type AdminOrder = {
   id: string;
@@ -86,7 +85,7 @@ export default function AdminPedidosPage() {
                   {new Date(order.createdAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}
                 </span>
               </div>
-              <span className={`status-pill status-${order.status}`}>{order.status}</span>
+              <span className={`status-pill status-${order.status}`}>{ORDER_STATUS_LABEL[order.status]}</span>
             </div>
             <ul style={{ margin: "0 0 10px", paddingLeft: 18, fontSize: "0.9rem" }}>
               {order.items.map((item, i) => (

@@ -169,8 +169,23 @@ table.admin-table th { color: var(--ink-soft); font-weight: 600; text-transform:
 
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
 .kpi-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+.kpi-card-primary { background: linear-gradient(155deg, rgba(216,114,44,0.14), var(--bg-card)); border-color: var(--ember); }
 .kpi-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-soft); }
 .kpi-value { font-family: "JetBrains Mono", monospace; font-size: 1.6rem; color: var(--gold); margin-top: 6px; }
+.kpi-trend { font-size: 0.74rem; margin-top: 8px; font-weight: 600; }
+.kpi-trend-up { color: #6bbf7a; }
+.kpi-trend-down { color: #d97070; }
+
+.dash-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .dash-grid { grid-template-columns: 1fr; } }
+
+.hourly-chart { display: flex; align-items: flex-end; gap: 4px; height: 140px; }
+.hourly-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; }
+.hourly-bar { width: 100%; max-width: 18px; background: var(--ember); border-radius: 3px 3px 0 0; min-height: 3px; transition: height 0.3s ease; }
+.hourly-bar-label { font-size: 0.6rem; color: var(--ink-soft); margin-top: 4px; }
+
+.type-bar-track { height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.type-bar-fill { height: 100%; background: var(--gold); border-radius: 3px; transition: width 0.3s ease; }
 
 .order-card { background: var(--bg-card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; margin-bottom: 14px; }
 .order-card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
