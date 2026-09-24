@@ -184,9 +184,6 @@ export default function CarrinhoPage() {
                   <span>Total estimado</span>
                   <span>{formatCents(estimatedTotal)}</span>
                 </div>
-                <p style={{ fontSize: "0.72rem", color: "var(--ink-soft)", marginTop: 6 }}>
-                  O valor final é recalculado pelo sistema no momento da confirmação.
-                </p>
               </div>
 
               {error && <div className="error-box" style={{ marginTop: 14 }}>{error}</div>}
