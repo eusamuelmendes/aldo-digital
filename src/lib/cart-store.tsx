@@ -14,6 +14,7 @@ export type CartLine = {
   key: string; // productId + optionIds ordenados, para agrupar linhas iguais
   productId: string;
   productName: string;
+  imageUrl?: string | null;
   unitPriceCents: number;
   quantity: number;
   notes?: string;

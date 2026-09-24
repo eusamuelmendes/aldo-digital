@@ -156,6 +156,7 @@ function ProductSheet({ product, onClose }: { product: Product; onClose: () => v
     addLine({
       productId: product.id,
       productName: product.name,
+      imageUrl: product.imageUrl,
       unitPriceCents: product.priceCents,
       quantity,
       notes: notes.trim() || undefined,

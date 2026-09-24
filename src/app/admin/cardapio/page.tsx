@@ -101,6 +101,7 @@ export default function AdminCardapioPage() {
       <table className="admin-table">
         <thead>
           <tr>
+            <th></th>
             <th>Produto</th>
             <th>Categoria</th>
             <th>Preço</th>
@@ -112,6 +113,25 @@ export default function AdminCardapioPage() {
         <tbody>
           {visible.map((product) => (
             <tr key={product.id} style={{ opacity: product.isActive ? 1 : 0.5 }}>
+              <td>
+                {product.imageUrl ? (
+                  <img
+                    src={product.imageUrl}
+                    alt=""
+                    style={{ width: 44, height: 44, objectFit: "cover", borderRadius: 6, background: "#2a201a" }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: 44,
+                      height: 44,
+                      borderRadius: 6,
+                      background: "#2a201a",
+                      border: "1px dashed var(--line)",
+                    }}
+                  />
+                )}
+              </td>
               <td>{product.name}</td>
               <td style={{ color: "var(--ink-soft)" }}>{categoryName(product.categoryId)}</td>
               <td>{formatCents(product.priceCents)}</td>

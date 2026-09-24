@@ -1,15 +1,16 @@
 /**
  * Seed — dados REAIS do Bar do Aldo.
  *
- * O cardápio abaixo foi extraído do site publicado: 23 itens com preço, nas
- * categorias Na Brasa, Para Compartilhar e Especialidades. Nenhum preço foi
- * inventado.
+ * Na Brasa, Para Compartilhar e Especialidades: preços mantidos como já
+ * publicados no site (confirmado com o Samuel em 24/09/2026, mesmo esses
+ * valores sendo mais altos que os do cardápio impresso do salão — o site é a
+ * referência oficial).
  *
- * Guarnições e Bebidas entram como categoria VAZIA: no cardápio atual elas
- * aparecem como "porções avulsas sob consulta" e "cardápio completo no salão",
- * ou seja, não existe preço público para copiar. Quem preenche é o próprio bar
- * pelo painel — inventar número aqui seria colocar dado falso dentro de um
- * sistema que vai virar relatório de faturamento.
+ * Guarnições, Porções e Bebidas (cervejas): preços tirados de fotos do
+ * cardápio impresso do bar, conferidos item a item com o Samuel em 24/09/2026.
+ * Bebidas sem álcool (água, suco, refrigerante) e drinks ainda não têm foto do
+ * cardápio físico — entram com o que já foi aprovado; o resto fica para o bar
+ * cadastrar pelo painel até chegar a foto da página que falta.
  */
 
 import { db, sql } from "./index";
@@ -31,6 +32,7 @@ type SeedProduct = {
   priceCents: number;
   isFeatured?: boolean;
   prepStation?: "COZINHA" | "BAR" | "CHURRASQUEIRA";
+  imageUrl?: string;
 };
 
 const CATEGORIES: Array<{
@@ -46,23 +48,23 @@ const CATEGORIES: Array<{
     description: "Espetos assados na brasa, do jeito que é desde 2000.",
     sortOrder: 1,
     products: [
-      { name: "Carne Bovina", priceCents: 1400, prepStation: "CHURRASQUEIRA" },
-      { name: "Carne Bovina (magra)", priceCents: 1400, prepStation: "CHURRASQUEIRA" },
-      { name: "Calabresa", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Almôndega", priceCents: 1500, prepStation: "CHURRASQUEIRA" },
+      { name: "Carne Bovina", priceCents: 1400, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-carne-bovina.jpg" },
+      { name: "Carne Bovina (magra)", priceCents: 1400, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-carne-bovina-magra.jpg" },
+      { name: "Calabresa", priceCents: 1300, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-calabresa.jpg" },
+      { name: "Almôndega", priceCents: 1500, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-almondega.jpg" },
       { name: "Peito de Frango (filé)", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Asa de Frango", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Coração de Frango", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Linguiça Mista", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Queijo", priceCents: 1300, prepStation: "CHURRASQUEIRA" },
-      { name: "Costela Bovina", priceCents: 1950, prepStation: "CHURRASQUEIRA" },
-      { name: "Medalhão de Frango", priceCents: 1850, prepStation: "CHURRASQUEIRA" },
-      { name: "Medalhão de Carne", priceCents: 1850, prepStation: "CHURRASQUEIRA" },
-      { name: "Lombinho Suíno", priceCents: 1450, prepStation: "CHURRASQUEIRA" },
+      { name: "Asa de Frango", priceCents: 1300, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-asa-de-frango.jpg" },
+      { name: "Coração de Frango", priceCents: 1300, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-coracao-de-frango.jpg" },
+      { name: "Linguiça Mista", priceCents: 1300, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-linguica-mista.jpg" },
+      { name: "Queijo", priceCents: 1300, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-queijo.jpg" },
+      { name: "Costela Bovina", priceCents: 1950, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-costela-bovina.jpg" },
+      { name: "Medalhão de Frango", priceCents: 1850, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-medalhao-de-frango.jpg" },
+      { name: "Medalhão de Carne", priceCents: 1850, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-medalhao-de-carne.jpg" },
+      { name: "Lombinho Suíno", priceCents: 1450, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-lombinho-suino.jpg" },
       { name: "Carne de Sol", priceCents: 1750, prepStation: "CHURRASQUEIRA" },
-      { name: "Pão de Alho", priceCents: 900, prepStation: "CHURRASQUEIRA" },
-      { name: "Creme de Alho", priceCents: 200, prepStation: "COZINHA" },
-      { name: "Ovo Frito (unid.)", priceCents: 200, prepStation: "COZINHA" },
+      { name: "Pão de Alho", priceCents: 900, prepStation: "CHURRASQUEIRA", imageUrl: "/products/brasa-pao-de-alho.jpg" },
+      { name: "Creme de Alho", priceCents: 200, prepStation: "COZINHA", imageUrl: "/products/brasa-creme-de-alho.jpg" },
+      { name: "Ovo Frito (unid.)", priceCents: 200, prepStation: "COZINHA", imageUrl: "/products/brasa-ovo-frito-unid.jpg" },
     ],
   },
   {
@@ -76,12 +78,14 @@ const CATEGORIES: Array<{
         description: "Serve 2 · arroz, batata, vinagrete, alface e tomate",
         priceCents: 9500,
         isFeatured: true,
+        imageUrl: "/products/compartilhar-picanha-especial.jpg",
       },
       {
         name: "Contra-Filé Especial",
         description: "Serve 2 · arroz, feijão tropeiro, alface e tomate",
         priceCents: 6800,
         isFeatured: true,
+        imageUrl: "/products/compartilhar-contra-file-especial.jpg",
       },
     ],
   },
@@ -94,16 +98,19 @@ const CATEGORIES: Array<{
         name: "Frango (filé)",
         description: "250g, arroz, batata frita, tomate e alface",
         priceCents: 2500,
+        imageUrl: "/products/especialidades-frango-file.jpg",
       },
       {
         name: "Picanha",
         description: "200g, arroz, batata frita, tomate e alface",
         priceCents: 5000,
+        imageUrl: "/products/especialidades-picanha.jpg",
       },
       {
         name: "Bife Contra-Filé",
         description: "200g, arroz, batata frita, tomate e alface",
         priceCents: 3200,
+        imageUrl: "/products/especialidades-bife-contra-file.jpg",
       },
       {
         name: "Prato do Chef",
@@ -111,24 +118,98 @@ const CATEGORIES: Array<{
           "Especial do Aldo · contra-filé 200g, arroz, ovo, feijão verde, tomate",
         priceCents: 3000,
         isFeatured: true,
+        imageUrl: "/products/especialidades-prato-do-chef.jpg",
       },
     ],
   },
   {
     slug: "guarnicoes",
     name: "Guarnições",
-    description:
-      "Arroz branco · Vinagrete · Feijão tropeiro · Feijão verde com bacon · Salada. Preços a cadastrar pelo painel.",
+    description: "Porções avulsas de acompanhamento, do cardápio impresso do salão.",
     sortOrder: 4,
-    products: [],
+    products: [
+      { name: "Arroz Branco", priceCents: 600, prepStation: "COZINHA", imageUrl: "/products/guarnicoes-arroz-branco.jpg" },
+      { name: "Vinagrete", priceCents: 600, prepStation: "COZINHA", imageUrl: "/products/guarnicoes-vinagrete.jpg" },
+      { name: "Feijão Tropeiro", priceCents: 600, prepStation: "COZINHA", imageUrl: "/products/guarnicoes-feijao-tropeiro.jpg" },
+      { name: "Feijão Verde com Bacon", priceCents: 700, prepStation: "COZINHA", imageUrl: "/products/guarnicoes-feijao-verde-com-bacon.jpg" },
+      // Salada: preço cortado na foto do cardápio impresso — aguardando confirmação do Samuel.
+    ],
+  },
+  {
+    slug: "porcoes",
+    name: "Porções",
+    description: "Porções para compartilhar, do cardápio impresso do salão.",
+    sortOrder: 5,
+    products: [
+      { name: "Batata Frita c/ Queijo e Bacon", priceCents: 2700, prepStation: "COZINHA" },
+      { name: "Batata Frita c/ Queijo", priceCents: 2000, prepStation: "COZINHA" },
+      { name: "Batata Frita (meia)", priceCents: 1800, prepStation: "COZINHA" },
+      {
+        name: "Picanha (porção)",
+        description: "500g, mandioca, cebola frita e salada",
+        priceCents: 5200,
+        prepStation: "CHURRASQUEIRA",
+      },
+      {
+        name: "Frango (porção)",
+        description: "Filé 300g, mandioca, cebola frita e salada",
+        priceCents: 3000,
+        prepStation: "CHURRASQUEIRA",
+      },
+      {
+        name: "Calabresa (porção)",
+        description: "500g, mandioca, cebola frita e salada",
+        priceCents: 2500,
+        prepStation: "CHURRASQUEIRA",
+      },
+      { name: "Frango à Passarinho (1kg)", priceCents: 2500, prepStation: "COZINHA" },
+      { name: "Salame com Ovo de Codorna", priceCents: 2000, prepStation: "COZINHA" },
+      {
+        name: "Contra-Filé (porção)",
+        description: "500g, mandioca, cebola frita e salada",
+        priceCents: 4000,
+        prepStation: "CHURRASQUEIRA",
+      },
+      { name: "Mandioca Frita (800g)", priceCents: 1200, prepStation: "COZINHA" },
+      { name: "Meia Porção Mandioca", priceCents: 800, prepStation: "COZINHA" },
+      { name: "Picanha com Fritas", priceCents: 7000, prepStation: "CHURRASQUEIRA" },
+      { name: "Contra-Filé com Mandioca Frita", priceCents: 5000, prepStation: "CHURRASQUEIRA" },
+      { name: "Tábua de Frios", priceCents: 4000, prepStation: "COZINHA" },
+      { name: "Tábua de Frios (meia)", priceCents: 2500, prepStation: "COZINHA" },
+    ],
   },
   {
     slug: "bebidas",
     name: "Bebidas",
-    description:
-      "Sucos naturais, refrigerantes, cerveja e água. Preços a cadastrar pelo painel.",
-    sortOrder: 5,
-    products: [],
+    description: "Sucos naturais, refrigerantes, cerveja e água.",
+    sortOrder: 6,
+    products: [
+      { name: "Água Mineral", priceCents: 400, prepStation: "BAR", imageUrl: "/products/bebidas-agua-mineral.jpg" },
+      { name: "Suco Natural", priceCents: 800, prepStation: "BAR", imageUrl: "/products/bebidas-suco-natural.jpg" },
+      { name: "Refrigerante (lata)", priceCents: 600, prepStation: "BAR", imageUrl: "/products/bebidas-refrigerante-lata.jpg" },
+      { name: "Caipirinha", priceCents: 1500, prepStation: "BAR", imageUrl: "/products/bebidas-caipirinha.jpg" },
+      // Cervejas — preços do cardápio impresso, conferidos com o Samuel em 24/09/2026.
+      { name: "Budweiser 600ml", priceCents: 1100, prepStation: "BAR" },
+      { name: "Bohemia 600ml", priceCents: 1100, prepStation: "BAR" },
+      { name: "Cerveja Eisenbahn 600ml", priceCents: 1100, prepStation: "BAR" },
+      { name: "Cerveja Antarctica Original", priceCents: 1100, prepStation: "BAR" },
+      { name: "Brahma 600ml", priceCents: 900, prepStation: "BAR" },
+      { name: "Cerveja Itaipava Premium", priceCents: 900, prepStation: "BAR" },
+      { name: "Skol 600ml", priceCents: 800, prepStation: "BAR" },
+      { name: "Crystal 600ml", priceCents: 700, prepStation: "BAR" },
+      { name: "Cerveja Itaipava", priceCents: 700, prepStation: "BAR" },
+      { name: "Crystal / Itaipava S/ Álcool", priceCents: 600, prepStation: "BAR" },
+      { name: "Brahma Long Neck S/ Álcool", priceCents: 600, prepStation: "BAR" },
+      { name: "Crystal Lata", priceCents: 300, prepStation: "BAR" },
+      { name: "Skol Lata", priceCents: 300, prepStation: "BAR" },
+      { name: "Brahma Lata (350ml)", priceCents: 300, prepStation: "BAR" },
+      { name: "Itaipava Lata (350ml)", priceCents: 300, prepStation: "BAR" },
+      { name: "Skol Palito (269ml)", priceCents: 300, prepStation: "BAR" },
+      { name: "Brahma Palito (269ml)", priceCents: 300, prepStation: "BAR" },
+      { name: "Copo Cosmel", priceCents: 300, prepStation: "BAR" },
+      // Água c/ gás, refri 600ml, drinks (gin/aperol/moscow mule/negroni/vinho/espumante):
+      // aguardando foto da página de bebidas não-alcoólicas/drinks do cardápio impresso.
+    ],
   },
 ];
 
@@ -201,6 +282,7 @@ export async function seed() {
           sortOrder: index,
           isFeatured: product.isFeatured ?? false,
           prepStation: product.prepStation ?? ("COZINHA" as const),
+          imageUrl: product.imageUrl ?? null,
         })),
       );
       productCount += category.products.length;

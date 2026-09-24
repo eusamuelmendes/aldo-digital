@@ -88,18 +88,34 @@ export default function CarrinhoPage() {
             {lines.map((line) => (
               <div key={line.key} className="card" style={{ marginBottom: 12 }}>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
-                  <div>
-                    <div style={{ fontWeight: 700 }}>{line.productName}</div>
-                    {line.options.length > 0 && (
-                      <div style={{ fontSize: "0.8rem", color: "var(--ink-soft)" }}>
-                        {line.options.map((o) => o.name).join(", ")}
-                      </div>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    {line.imageUrl && (
+                      <img
+                        src={line.imageUrl}
+                        alt=""
+                        style={{
+                          width: 56,
+                          height: 56,
+                          objectFit: "cover",
+                          borderRadius: 8,
+                          flexShrink: 0,
+                          background: "#2a201a",
+                        }}
+                      />
                     )}
-                    {line.notes && (
-                      <div style={{ fontSize: "0.8rem", color: "var(--ink-soft)", fontStyle: "italic" }}>
-                        "{line.notes}"
-                      </div>
-                    )}
+                    <div>
+                      <div style={{ fontWeight: 700 }}>{line.productName}</div>
+                      {line.options.length > 0 && (
+                        <div style={{ fontSize: "0.8rem", color: "var(--ink-soft)" }}>
+                          {line.options.map((o) => o.name).join(", ")}
+                        </div>
+                      )}
+                      {line.notes && (
+                        <div style={{ fontSize: "0.8rem", color: "var(--ink-soft)", fontStyle: "italic" }}>
+                          "{line.notes}"
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <button className="btn-outline-danger" onClick={() => removeLine(line.key)}>
                     remover
